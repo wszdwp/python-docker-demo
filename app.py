@@ -1,12 +1,24 @@
 import mysql.connector
 import json
 from flask import Flask
+from price import Price
+from flask import render_template
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, Docker Test!'
+    return render_template('hello.html')
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page404.html'), 404
+
+@app.route('/pricelist')
+def get_price():
+    price = Price()
+    res = price.getPrice({})
+    return res.json()
 
 @app.route('/widgets')
 def get_widgets():
@@ -17,7 +29,6 @@ def get_widgets():
         database="inventory"
     )
     cursor = mydb.cursor()
-
 
     cursor.execute("SELECT * FROM widgets")
 
