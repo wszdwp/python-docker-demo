@@ -1,6 +1,6 @@
 import mysql.connector
 import json
-from flask import Flask
+from flask import Flask, request
 from price import Price
 from flask import render_template
 
@@ -14,10 +14,25 @@ def hello_world():
 def page_not_found(error):
     return render_template('page404.html'), 404
 
-@app.route('/pricelist')
-def get_price():
+@app.route('/pricelist', methods=['GET', 'POST'])
+def food_price():
+    if request.method == 'GET':
+        return render_template('foodprice.html')
+    elif request.method == 'POST':
+        craftName = request.form['craftname']
+        markets = request.form['markets']
+        requestJson = {
+            'craftIndex': 13235,
+            'craftName': craftName,
+            'eudName': markets,
+            'queryDateType': 0,
+            'pageNo': 1
+        }
+        return get_price(requestJson)
+
+def get_price(requestJson):
     price = Price()
-    res = price.getPrice({})
+    res = price.getPrice(requestJson)
     return res.json()
 
 @app.route('/widgets')
