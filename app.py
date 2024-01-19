@@ -27,21 +27,10 @@ def xinhuadict():
         return render_template('xinhuadict.html')
     elif request.method == 'POST':
         print("post")
-        word = request.form['word']
+        word = request.form['word'].strip()
         wordsUtil = WordsUtil()
-        wordData = wordsUtil.searchWord(word)
-        data = '没找到！'
-        if wordData:
-            data = {
-                'word': wordData['word'],
-                'oldword': wordData['oldword'],
-                'strokes': wordData['strokes'],
-                'pinyin': wordData['pinyin'],
-                'radicals': wordData['radicals'],
-                'explanation': wordData['explanation'],
-                'more': wordData['more']
-            }
-        return render_template('xinhuadict.html', word=word, definition=data)
+        definition = wordsUtil.searchDefinition(word)
+        return render_template('xinhuadict.html', word=word, definition=definition)
 
 @app.route('/pricelist', methods=['GET', 'POST'])
 def pricelist():
