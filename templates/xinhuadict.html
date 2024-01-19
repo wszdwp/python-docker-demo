@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Xin Hua Dictionary{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="search">Search</label>
+    <input name="word" id="word" required>
+    <input type="submit" value="Search">
+  </form>
+  {% if definition and word %}
+    <h1>字/词: {{ word }}</h1>
+    <ul>
+      <li>拼音: {{ definition.pinyin }}</li>
+      <li>笔画: {{ definition.strokes }}</li>
+      <li>解释: {{ definition.explanation }}</li>
+      <li>更多解释: {{ definition.more }}</li>
+    </ul>
+  {% endif %}
+{% endblock %}

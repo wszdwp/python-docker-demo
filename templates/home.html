@@ -1,0 +1,27 @@
+<!doctype html>
+<title>Flask Demo</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+  url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
+{% if name %}
+  <h1>Hello {{ name }}!</h1>
+{% else %}
+  <form id="nameForm" method="post">
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name">
+    <input type="submit" value="Submit">
+  </form>
+  <h1>Hello, World!</h1>
+  <ul>
+    <li><a href="{{url_for('pricelist')}}">pricelist</a></li>
+    <li><a href="{{url_for('widgets')}}">widgets</a></li>
+    <li><a href="{{url_for('initdb')}}">initdb</a></li>
+    <li><a href="{{url_for('xinhuadict')}}">Xin Hua Dictionary</a></li>
+  </ul>
+{% endif %}
+<script type="text/javascript">
+  $( '#nameForm' ).each(function(){
+    this.reset();
+  });
+</script>
