@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Xin Hua Dictionary{% endblock %}</h1>
+  <h1>{% block title %}新华辞典{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
   <form method="post">
-    <label for="search">Search</label>
-    <input name="word" id="word" required>
-    <input type="submit" value="Search">
+    <label for="word">字/词</label>
+    <input type="text" name="word" id="word" placeholder="输入字词" required>
+    <button type="submit" class="btn btn-primary">搜索</button>
   </form>
   {% if definition and word %}
     <h1>字/词: {{ word }}</h1>
