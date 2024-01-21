@@ -22,14 +22,25 @@ def page_not_found(error):
 @app.route('/xinhuadict', methods=['GET', 'POST'])
 def xinhuadict():
     if request.method == 'GET':
-        print("get")
         return render_template('xinhuadict.html')
     elif request.method == 'POST':
-        print("post")
         word = request.form['word'].strip()
         wordsUtil = WordsUtil()
         definition = wordsUtil.searchDefinition(word)
         return render_template('xinhuadict.html', word=word, definition=definition)
+    
+@app.route('/xiehouyu', methods=['GET', 'POST'])
+def xiehouyu():
+    if request.method == 'GET':
+        return render_template('xiehouyu.html')
+    elif request.method == 'POST':
+        wordsUtil = WordsUtil(xiehouyu=True)
+        number = request.form['number'].strip()
+        if number.isdigit():
+            words = wordsUtil.getNRandomXiehouyu(int(number))
+            return render_template('xiehouyu.html', words=words, number=number)
+        else:
+            return render_template('xiehouyu.html', words=None, msg='Invalid input')
 
 @app.route('/pricelist', methods=['GET', 'POST'])
 def pricelist():

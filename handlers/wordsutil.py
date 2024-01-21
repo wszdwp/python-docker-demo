@@ -1,19 +1,26 @@
 import json
+import random
 
 class WordsUtil:
     wordsDict = dict()
     phraseDict = dict()
+    xiehouyuDict = dict()
     
-    def __init__(self):
-        with open('./data/word.json', 'r') as f:
-            data = json.load(f)
-            for item in data:
-                self.wordsDict[item['word']] = item
-        with open('./data/ci.json', 'r') as f:
-            data = json.load(f)
-            for item in data:
-                self.phraseDict[item['ci']] = item
-
+    def __init__(self, xiehouyu=False):
+        if not xiehouyu:
+            with open('./data/word.json', 'r') as f:
+                data = json.load(f)
+                for item in data:
+                    self.wordsDict[item['word']] = item
+            with open('./data/ci.json', 'r') as f:
+                data = json.load(f)
+                for item in data:
+                    self.phraseDict[item['ci']] = item
+        else:
+            with open('./data/xiehouyu.json', 'r') as f:
+                data = json.load(f)
+                self.xiehouyuList = [(d['riddle'], d['answer']) for d in data]
+                
     def searchDefinition(self, word=''):
         definition = None
         if word is None:
@@ -60,8 +67,22 @@ class WordsUtil:
         if phrase in self.phraseDict:
             return self.phraseDict[phrase]
         return None
+    
+    def getNRandomXiehouyu(self, N=10):
+        words = set()
+        word = ''
+        for i in range(0, min(N, 100)):
+            while word not in words:           
+                pos = random.randint(0, len(self.xiehouyuList)-1)
+                word = self.xiehouyuList[pos]
+                print('pos ' + str(pos) + ' word: ' + str(word))
+                words.add(word)
+            word = ''
+        return list(words)
 
 if __name__ == "__main__":
-    wordsUtil = WordsUtil()
-    wordsUtil.searchWord('话')
-    wordsUtil.searchWord('话语')
+    # wordsUtil = WordsUtil()
+    # wordsUtil.searchWord('话')
+    # wordsUtil.searchWord('话语')
+    wordsUtil = WordsUtil(True)
+    print(wordsUtil.getNRandomXiehouyu(5))

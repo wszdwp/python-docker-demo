@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}歇后语{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="word">随机生成</label>
+    <input type="number" name="number" min="1" max="100" placeholder="多少条歇后语？" required>
+    <button type="submit" class="btn btn-primary">提交</button>
+  </form>
+  {% if words and number %}
+    <h1>随机生成 {{ number }} 条歇后语.</h1>
+    <ul>
+      {% for word in words %}
+      <li>{{ word[0] }} --- {{ word[1] }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% if msg %}
+    <div class="alert alert-danger" > {{ msg }} </div>
+    {% endif %}
+  {% endif %}
+
+{% endblock %}

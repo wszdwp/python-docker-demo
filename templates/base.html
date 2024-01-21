@@ -4,6 +4,9 @@
     <title>{% block title %}{% endblock %} - Flaskr</title>
     <link
       rel="stylesheet"
+      href="{{ url_for('static', filename='/css/bootstrap.min.css') }}"/>
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename='/css/style.css') }}"/>
     <script src="{{ url_for('static', filename='/js/jquery-3.7.1.min.js') }}"></script>
   </head>
@@ -17,7 +20,10 @@
               <a class="nav-link" href="{{url_for('home')}}">Home</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{url_for('xinhuadict')}}">Xin Hua Dictionary</a>
+              <a class="nav-link" href="{{url_for('xinhuadict')}}">新华字典</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('xiehouyu')}}">歇后语</a>
             </li>
           </ul>
         </div>
