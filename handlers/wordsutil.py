@@ -1,13 +1,15 @@
 import json
 import random
+from handlers.worddictenum import WordDictType
 
 class WordsUtil:
     wordsDict = dict()
     phraseDict = dict()
-    xiehouyuDict = dict()
+    chenyuDict = dict()
+    idiomDict = dict()
     
-    def __init__(self, xiehouyu=False):
-        if not xiehouyu:
+    def __init__(self, wordDictType=WordDictType.XINHUA):
+        if wordDictType is WordDictType.XINHUA:
             with open('./data/word.json', 'r') as f:
                 data = json.load(f)
                 for item in data:
@@ -16,10 +18,16 @@ class WordsUtil:
                 data = json.load(f)
                 for item in data:
                     self.phraseDict[item['ci']] = item
-        else:
+        elif wordDictType is WordDictType.XIEHOUYU:
             with open('./data/xiehouyu.json', 'r') as f:
                 data = json.load(f)
                 self.xiehouyuList = [(d['riddle'], d['answer']) for d in data]
+        elif wordDictType is WordDictType.CHENYU:
+            with open('./data/idiom.json', 'r') as f:
+                data = json.load(f)
+                for item in data:
+                    self.idiomDict[item['word']] = item
+                    self.idiomDict[item['abbreviation']] = item
                 
     def searchDefinition(self, word=''):
         definition = None
@@ -68,6 +76,25 @@ class WordsUtil:
             return self.phraseDict[phrase]
         return None
     
+    def searchIdiom(self, idiom=''):
+        if idiom is None:
+            return None
+        if len(idiom) < 4:
+            return None
+        
+        if idiom in self.idiomDict:
+            wordData = self.idiomDict[idiom]
+            definition = {
+                    'word': wordData['word'],
+                    'abbreviation': wordData['abbreviation'],
+                    'pinyin': wordData['pinyin'],
+                    'explanation': wordData['explanation'],
+                    "derivation": wordData['derivation'],
+                    "example": wordData['example'],
+                }
+            return definition 
+        return None 
+    
     def getNRandomXiehouyu(self, N=10):
         words = set()
         word = ''
@@ -75,7 +102,6 @@ class WordsUtil:
             while word not in words:           
                 pos = random.randint(0, len(self.xiehouyuList)-1)
                 word = self.xiehouyuList[pos]
-                print('pos ' + str(pos) + ' word: ' + str(word))
                 words.add(word)
             word = ''
         return list(words)

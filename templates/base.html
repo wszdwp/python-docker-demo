@@ -2,13 +2,14 @@
 <html>
   <head>
     <title>{% block title %}{% endblock %} - Flaskr</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='/css/bootstrap.min.css') }}"/>
+      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='/css/style.css') }}"/>
-    <script src="{{ url_for('static', filename='/js/jquery-3.7.1.min.js') }}"></script>
+      href="{{ url_for('static', filename='css/style.css') }}"/>
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}"></script>
   </head>
 
   <body>
@@ -21,6 +22,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{url_for('xinhuadict')}}">新华字典</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('chenyudict')}}">成语辞典</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{url_for('xiehouyu')}}">歇后语</a>

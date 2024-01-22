@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask import render_template
 from handlers.price import Price
 from handlers.widgets import Widgets
+from handlers.worddictenum import WordDictType
 from handlers.wordsutil import WordsUtil
 
 app = Flask(__name__)
@@ -25,16 +26,26 @@ def xinhuadict():
         return render_template('xinhuadict.html')
     elif request.method == 'POST':
         word = request.form['word'].strip()
-        wordsUtil = WordsUtil()
+        wordsUtil = WordsUtil(WordDictType.XINHUA)
         definition = wordsUtil.searchDefinition(word)
         return render_template('xinhuadict.html', word=word, definition=definition)
+
+@app.route('/chenyudict', methods=['GET', 'POST'])
+def chenyudict():
+    if request.method == 'GET':
+        return render_template('chenyudict.html')
+    elif request.method == 'POST':
+        word = request.form['word'].strip()
+        wordsUtil = WordsUtil(WordDictType.CHENYU)
+        definition = wordsUtil.searchIdiom(word)
+        return render_template('chenyudict.html', word=word, definition=definition)
     
 @app.route('/xiehouyu', methods=['GET', 'POST'])
 def xiehouyu():
     if request.method == 'GET':
         return render_template('xiehouyu.html')
     elif request.method == 'POST':
-        wordsUtil = WordsUtil(xiehouyu=True)
+        wordsUtil = WordsUtil(WordDictType.XIEHOUYU)
         number = request.form['number'].strip()
         if number.isdigit():
             words = wordsUtil.getNRandomXiehouyu(int(number))

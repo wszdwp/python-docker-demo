@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}成语辞典{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="word">成语</label>
+    <input type="text" name="word" id="word" placeholder="输入成语/首字母" required>
+    <button type="submit" class="btn btn-primary">搜索</button>
+  </form>
+  {% if definition and word %}
+    <h1>{{ definition.word }}</h1>
+    <ul>
+      <li>拼音: {{ definition.pinyin }}</li>
+      <li>拼音首字母: {{ definition.abbreviation }}</li>
+      <li>解释: {{ definition.explanation }}</li>
+      <li>例子: {{ definition.example }}</li>
+      <li>出处: {{ definition.derivation }}</li>
+    </ul>  
+  {% endif %}
+{% endblock %}
