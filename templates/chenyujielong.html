@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}成语接龙{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="word">成语</label>
+    <input type="text" name="word" id="word" placeholder="输入成语/首字母" required>
+    <label for="number">接龙数目</label>
+    <input type="number" name="number" min="1" max="50" placeholder="多少条？" required>
+    <button type="submit" class="btn btn-primary">提交</button>
+  </form>
+  {% if idioms and number and count %}
+    <h1>输入{{ number }}条，实际产生{{ count }}条成语接龙。</h1>
+    <ul>
+      {% for idiom in idioms %}
+      <li><b>{{ idiom['word'] }}</b>: {{ idiom['explanation']}}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    {% if msg %}
+    <div class="alert alert-danger" > {{ msg }} </div>
+    {% endif %}
+  {% endif %}
+{% endblock %}

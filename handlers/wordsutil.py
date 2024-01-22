@@ -5,9 +5,8 @@ from handlers.worddictenum import WordDictType
 class WordsUtil:
     wordsDict = dict()
     phraseDict = dict()
-    chenyuDict = dict()
     idiomDict = dict()
-    
+     
     def __init__(self, wordDictType=WordDictType.XINHUA):
         if wordDictType is WordDictType.XINHUA:
             with open('./data/word.json', 'r') as f:
@@ -23,11 +22,16 @@ class WordsUtil:
                 data = json.load(f)
                 self.xiehouyuList = [(d['riddle'], d['answer']) for d in data]
         elif wordDictType is WordDictType.CHENYU:
+            self.idiomsListDict = dict()
             with open('./data/idiom.json', 'r') as f:
                 data = json.load(f)
                 for item in data:
                     self.idiomDict[item['word']] = item
                     self.idiomDict[item['abbreviation']] = item
+                    firstPinyin = item['pinyin'].split(' ')[0]
+                    if firstPinyin not in self.idiomsListDict:
+                        self.idiomsListDict[firstPinyin] = list()
+                    self.idiomsListDict[firstPinyin].append(item)
                 
     def searchDefinition(self, word=''):
         definition = None
@@ -93,7 +97,38 @@ class WordsUtil:
                     "example": wordData['example'],
                 }
             return definition 
-        return None 
+        return None
+    
+    def findNextNIdioms(self, idiom='', N=1):
+        idiomEntity = self.searchIdiom(idiom)
+        if idiomEntity is None:
+            return [idiom]
+        
+        idioms = [idiomEntity]
+        idiomWords = set()
+        idiomWords.add(idiomEntity['word'])
+        next = ''
+        for i in range(1, min(N, 100)):
+            candidatesSize = 0
+            j = 0
+            while next not in idiomWords:
+                lastPinyin = idiomEntity['pinyin'].split(' ')[-1]
+                candidatesSize = len(self.idiomsListDict[lastPinyin])
+                if j >= candidatesSize:
+                    break
+                next = self.idiomsListDict[lastPinyin][j]['word']
+                if next not in idiomWords:
+                    break
+                j = j + 1
+            # Break if cannot find more idioms
+            if len(next) == 0 or j >= candidatesSize or next in idiomWords:
+                break
+            idiomWords.add(next)
+            idiom = next
+            idiomEntity = self.searchIdiom(idiom)
+            idioms.append(idiomEntity)
+            next = ''
+        return list(idioms)
     
     def getNRandomXiehouyu(self, N=10):
         words = set()
@@ -107,8 +142,8 @@ class WordsUtil:
         return list(words)
 
 if __name__ == "__main__":
-    # wordsUtil = WordsUtil()
-    # wordsUtil.searchWord('话')
-    # wordsUtil.searchWord('话语')
-    wordsUtil = WordsUtil(True)
+    wordsUtil = WordsUtil(WordDictType.XINHUA)
+    print(wordsUtil.searchWord('话'))
+    print(wordsUtil.searchWord('话语'))
+    wordsUtil = WordsUtil(WordDictType.XIEHOUYU)
     print(wordsUtil.getNRandomXiehouyu(5))

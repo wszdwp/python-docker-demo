@@ -40,6 +40,20 @@ def chenyudict():
         definition = wordsUtil.searchIdiom(word)
         return render_template('chenyudict.html', word=word, definition=definition)
     
+@app.route('/chenyujielong', methods=['GET', 'POST'])
+def chenyujielong():
+    if request.method == 'GET':
+        return render_template('chenyujielong.html')
+    elif request.method == 'POST':
+        word = request.form['word'].strip()
+        number = request.form['number'].strip()
+        wordsUtil = WordsUtil(WordDictType.CHENYU)
+        if number.isdigit():
+            idioms = wordsUtil.findNextNIdioms(word, int(number))
+            return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms))
+        else:
+            return render_template('chenyujielong.html', idioms=None, msg='Invalid input')
+    
 @app.route('/xiehouyu', methods=['GET', 'POST'])
 def xiehouyu():
     if request.method == 'GET':
