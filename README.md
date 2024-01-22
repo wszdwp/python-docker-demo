@@ -1,5 +1,6 @@
 # python-docker-demo
 python-docker-demo
+![github action](https://github.com/wszdwp/python-docker-demo/actions/workflows/main.yml/badge.svg)
 
 ## Guide
 https://docs.docker.com/language/python/build-images/
