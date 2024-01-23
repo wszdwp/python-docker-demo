@@ -129,6 +129,28 @@ class WordsUtil:
             idioms.append(idiomEntity)
             next = ''
         return list(idioms)
+        
+    def findNextAllIdioms(self, idiom='', N=1):
+        allIdioms = []
+        idiomEntity = self.searchIdiom(idiom)            
+        if idiomEntity is None:
+            idioms = [idiom]
+            allIdioms.append(idioms)
+            return allIdioms
+        
+        while idiomEntity:        
+            lastPinyin = idiomEntity['pinyin'].split(' ')[-1]
+            nextIdioms = self.idiomsListDict[lastPinyin]
+            N = N - 1
+            if N == 0:
+                break
+            if nextIdioms:
+                allIdioms.append(nextIdioms)
+                idiomEntity = nextIdioms[0]
+                # idiomEntity = nextIdioms[random.randint(0, len(nextIdioms)-1)]
+            else:
+                break
+        return allIdioms
     
     def getNRandomXiehouyu(self, N=10):
         words = set()

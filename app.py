@@ -47,10 +47,15 @@ def chenyujielong():
     elif request.method == 'POST':
         word = request.form['word'].strip()
         number = request.form['number'].strip()
+        cheat = request.form.getlist('cheat')
         wordsUtil = WordsUtil(WordDictType.CHENYU)
         if number.isdigit():
-            idioms = wordsUtil.findNextNIdioms(word, int(number))
-            return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms))
+            if cheat:
+                allIdioms = wordsUtil.findNextAllIdioms(word, int(number))
+                idioms = wordsUtil.findNextNIdioms(word, int(number))
+                return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms), allIdioms=allIdioms)
+            else:
+                return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms))
         else:
             return render_template('chenyujielong.html', idioms=None, msg='Invalid input')
     
