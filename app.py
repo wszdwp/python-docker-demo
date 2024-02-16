@@ -1,11 +1,18 @@
+import os
 from flask import Flask, request
 from flask import render_template
+from flask import send_from_directory
+from config import TestingConfig, Config
 from handlers.price import Price
 from handlers.widgets import Widgets
 from handlers.worddictenum import WordDictType
 from handlers.wordsutil import WordsUtil
+from handlers.fileutil import FileUtil
+from handlers.pdfocr import PdfOcr
 
 app = Flask(__name__)
+app.config.from_object(TestingConfig())
+app.logger.info('App config: %s', app.config)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/home', methods=['GET', 'POST'])
@@ -47,12 +54,12 @@ def chenyujielong():
     elif request.method == 'POST':
         word = request.form['word'].strip()
         number = request.form['number'].strip()
-        cheat = request.form.getlist('cheat')
+        answers = request.form.getlist('answers')
         wordsUtil = WordsUtil(WordDictType.CHENYU)
         if number.isdigit():
-            if cheat:
+            idioms = wordsUtil.findNextNIdioms(word, int(number))
+            if answers:
                 allIdioms = wordsUtil.findNextAllIdioms(word, int(number))
-                idioms = wordsUtil.findNextNIdioms(word, int(number))
                 return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms), allIdioms=allIdioms)
             else:
                 return render_template('chenyujielong.html', idioms=idioms, number=number, count=len(idioms))
@@ -71,6 +78,35 @@ def xiehouyu():
             return render_template('xiehouyu.html', words=words, number=number)
         else:
             return render_template('xiehouyu.html', words=None, msg='Invalid input')
+        
+@app.route('/ocr', methods=['GET', 'POST'])
+def ocr():
+    if request.method == 'GET':
+        return render_template('ocrtool.html')
+    elif request.method == 'POST':
+        if 'file' not in request.files:
+            return render_template('ocrtool.html', msg='no such file')
+        file = request.files['file']
+        fileUtil = FileUtil(app.config['UPLOAD_FOLDER'], app.config['ALLOWED_EXTENSIONS'])
+        sourceFilePath = fileUtil.saveFile(file)
+        app.logger.info('saved file into: %s', sourceFilePath)
+        pdfocr = PdfOcr()
+        outputFilePath = pdfocr.ocrFile(sourceFilePath, file.filename)
+        return render_template('ocrtool.html', sourceFilePath=sourceFilePath, outputFilePath=outputFilePath)
+    
+@app.route('/uploads/<fileName>', methods=['GET'])
+def uploads(fileName):
+    uploadPath = app.config['UPLOAD_FOLDER']
+    fullPath = os.path.join(uploadPath, fileName)
+    with open(fullPath, 'rb') as f:
+        return send_from_directory(uploadPath, fileName)
+    
+@app.route('/output/<fileName>', methods=['GET'])
+def output(fileName):
+    outputPath = app.config['OUTPUT_FOLDER']
+    fullPath = os.path.join(outputPath, fileName)
+    with open(fullPath, 'rb') as f:
+        return send_from_directory(outputPath, fileName)
 
 @app.route('/pricelist', methods=['GET', 'POST'])
 def pricelist():

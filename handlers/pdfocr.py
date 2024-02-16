@@ -1,23 +1,44 @@
 from PIL import Image
-
+from flask import current_app
+from config import Config
+import os
 import pytesseract
 import pdf2image
 
+class PdfOcr:    
+    def __init__(self) -> None:
+        pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
+
+    def ocrFile(self, pdfFilePath, filename):
+        images = self.pdfToImages(pdfFilePath)
+        return self.extractTextToFile(images, filename)
+        
+    def pdfToImages(self, pdfFilePath):
+        images = pdf2image.convert_from_path(pdfFilePath)
+        return images
+    
+    def extractTextToFile(self, images, filename):
+        outputFile = os.path.join(current_app.config['OUTPUT_FOLDER'], filename[-4], '.txt')
+        for image in images:
+            text = pytesseract.image_to_string(image)
+            with open(outputFile, "a") as f:
+                f.write(text)
+        current_app.logger.info('Saved file to : %s', outputFile)
+        return outputFile
+        
+
 # If you don't have tesseract executable in your PATH, include the following:
-pytesseract.pytesseract.tesseract_cmd = r'/usr/local/bin/tesseract'
+
 # Example tesseract_cmd = r'C:\Program Files (x86)\Tesseract-OCR\tesseract'
 # /Users/codingpan/Workspace/PythonProjects/python-docker/python-docker-demo/.venv/lib/python3.9/site-packages
-TEST_IMAGE_NAME = '/Users/codingpan/Documents/Finance/eStmt_2023-12-11.pdf'
 # Simple image to string
 # print(pytesseract.image_to_string(Image.open('test.png')))
 
 # Convert PDF to image
-images = pdf2image.convert_from_path(TEST_IMAGE_NAME)
+# images = pdf2image.convert_from_path(TEST_IMAGE_NAME)
 
 # Extract text from image
-for image in images:
-    text = pytesseract.image_to_string(image)
-    print(text)
+
 
 # In order to bypass the image conversions of pytesseract, just use relative or absolute image path
 # NOTE: In this case you should provide tesseract supported images or tesseract will return error

@@ -139,17 +139,17 @@ class WordsUtil:
             return allIdioms
         
         while idiomEntity:        
+            print('pinyin: ' + idiomEntity['pinyin'])
             lastPinyin = idiomEntity['pinyin'].split(' ')[-1]
+            if lastPinyin not in self.idiomsListDict:
+                break
             nextIdioms = self.idiomsListDict[lastPinyin]
+            allIdioms.append(nextIdioms)
+            # idiomEntity = nextIdioms[0]
             N = N - 1
             if N == 0:
                 break
-            if nextIdioms:
-                allIdioms.append(nextIdioms)
-                idiomEntity = nextIdioms[0]
-                # idiomEntity = nextIdioms[random.randint(0, len(nextIdioms)-1)]
-            else:
-                break
+            idiomEntity = nextIdioms[random.randint(0, len(nextIdioms)-1)]
         return allIdioms
     
     def getNRandomXiehouyu(self, N=10):

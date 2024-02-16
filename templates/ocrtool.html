@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Image to text{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post" enctype="multipart/form-data">
+    <div>
+      <label for="file">Choose file to upload</label>
+      <input 
+      type=file 
+      name=file 
+      accept=".jpg, .jpeg, .png, .pdf"
+      multiple>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+  {% if sourceFilePath %}
+  <a href="{{ sourceFilePath }}">{{ sourceFilePath }}</a><br>
+  {% endif %}
+
+  {% if outputFilePath %}
+  <a href="{{ outputFilePath }}">{{ outputFilePath }}</a><br>
+  {% endif %}
+
+  {% if msg %}
+  <p>{{ msg }}</p>
+  {% endif %}
+{% endblock %}
